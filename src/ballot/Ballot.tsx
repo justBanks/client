@@ -2,7 +2,8 @@ import * as React from "react";
 
 import Footer from '../Footer';
 import Header from "../Header";
-import { ballotStore } from "./BallotStore";
+import { ballotStore, BallotStore } from "./BallotStore";
+import { ICandidate } from "./Candidate";
 import DistrictHeader from "./DistrictHeader";
 import EndOfBallotInput from "./EndOfBallotInput";
 import EndorserGrid from "./Endorsers/EndorserGrid";
@@ -16,13 +17,22 @@ import Step2Header from "./Step2Header";
 
 import { GetDistricts, GetEndorsers, GetMeasures } from '../services/Services';
 
-class Ballot extends React.Component {
+interface IBallotState {
+  ballotStore: BallotStore,
+  districts: any[]
+}
+
+class Ballot extends React.Component<{}, IBallotState> {
   constructor(props: any) {
     super(props);
-    this.injectDemoData();
+    this.state = {
+      ballotStore: new BallotStore(),
+      districts: []
+    };
   }
 
   public componentDidMount() {
+    this.getBallotData();
     window.addEventListener("scroll", this.handleScroll);
   }
 
@@ -39,21 +49,19 @@ class Ballot extends React.Component {
   };
 
   public render() {
-    const mockDistrictData = GetDistricts();
-
     return (
       <div>
         <Header />
         <Step1Header />
-        <EndorserGrid ballotStore={ballotStore} />
+        <EndorserGrid ballotStore={this.state.ballotStore} />
 
         <Step2Header />
 
-        {mockDistrictData.districts.map(district => {
+        {this.state.districts.map(district => {
           return (
             <React.Fragment key={district.id}>
               <DistrictHeader key={district.id} districtName={district.name} />
-              {district.races.map(race => {
+              {district.races.map((race: { id: string; name: string; candidates: ICandidate[]; }) => {
                 return (
                   <Race key={race.id} id={race.id} name={race.name} candidates={race.candidates} />
                 )
@@ -64,7 +72,7 @@ class Ballot extends React.Component {
 
         <div className="main">
           <DistrictHeader districtName="Measures" />
-          {ballotStore.measures.map(measure => {
+          {this.state.ballotStore.measures.map(measure => {
             return (
               <div key={measure.id}>
                 <Measure measure={measure} />
@@ -87,23 +95,33 @@ class Ballot extends React.Component {
     );
   }
 
-  private injectDemoData() {
-    const mockEndorserData = GetEndorsers();
-    const mockMeasureData = GetMeasures();
+  private getBallotData()
+  {
+    const districtPromise = GetDistricts();
+    const endorserPromise = GetEndorsers();
+    const measurePromise = GetMeasures();
 
-    mockEndorserData.endorsers.forEach(value => {
-      const endorser = new EndorserStore(value.description, value.endorserId, value.endorserImg, value.endorserUrl, value.endorserUrlText);
-      ballotStore.addEndorser(endorser);
-    });
+    Promise.all([districtPromise, endorserPromise, measurePromise])
+      .then(([districtData, endorserData, measureData]) => {
+        endorserData.endorsers.forEach((value) => {
+          const endorser = new EndorserStore(value.description, value.endorserId, value.endorserImg, value.endorserUrl, value.endorserUrlText);
+          ballotStore.addEndorser(endorser);
+        });
+        
+        measureData.measures.forEach((measure) => {
+          const demoMeasure = new MeasureStore();
+          demoMeasure.name = measure.name;
+          demoMeasure.title = measure.title;
+          demoMeasure.description = measure.description;
+          demoMeasure.choices = measure.choices;
+          ballotStore.addMeasure(demoMeasure)
+        });
 
-    mockMeasureData.measures.forEach(measure => {
-      const demoMeasure = new MeasureStore();
-      demoMeasure.name = measure.name;
-      demoMeasure.title = measure.title;
-      demoMeasure.description = measure.description;
-      demoMeasure.choices = measure.choices;
-      ballotStore.addMeasure(demoMeasure)
-    });
+        this.setState({
+          ballotStore,
+          districts: districtData.districts 
+        });
+      });
   }
 }
 
