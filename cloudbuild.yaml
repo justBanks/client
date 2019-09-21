@@ -8,6 +8,10 @@ steps:
   - name: 'gcr.io/cloud-builders/npm'
     args: [ 'run', 'build']
 
+  # Create cloud app egnine
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'create']
+
   # Deploy to google cloud app egnine
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy']
