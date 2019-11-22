@@ -5,7 +5,7 @@ class Links extends React.Component {
   public render() {
     return(
       <div>
-          <Link to="/admin/voting_districts" className="dashboard-link">Geographic Voting Districts</Link>
+          <Link to="/admin/districts" className="dashboard-link">Geographic Voting Districts</Link>
           <div className="instructions">Add, Edit, and Delete the list of voting districts which you can later assign to Measures and Seats.</div>
 
           <Link to="/admin/seats" className="dashboard-link">Seats</Link>

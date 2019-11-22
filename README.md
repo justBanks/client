@@ -15,16 +15,13 @@ Ready, Set, Vote! is a project of the [Municipal League](http://munileague.org/)
 ### Frontend
 
 - React (created with react-scripts-ts) - Main UI library
-- Typescript - To provide types in JS, making development easier
-- Mobx - To provide a data store to React
+- ~~Mobx - To provide a data store to React~~
+- React Hooks (`useReducer`) replacing Mobx as the data store
 
 ### Backend
 
-- AWS - Used to host the website
 - Express - Server side routing
-- Serverless - To deploy server-side logic as an AWS Lambda
-- SQL - Database
-- [TODO: Finish choosing and building out backend]
+- Google Cloud Platform
 
 ### React Endpoints
 
@@ -38,27 +35,25 @@ Ready, Set, Vote! is a project of the [Municipal League](http://munileague.org/)
 
 #### Admin
 
-- `/admin` - Admin side of the side
-- [TODO: Finish listing other parts of the admin site]
+- `/admin` - Admin area of the site
+- `/admin/districts` - Maintain the list of voting districts which you can later assign to Measures and Seats
+- `/admin/seats` - Maintain the list of Seats to which you can later assign Candidates
+- `/admin/candidates` - Maintain the list of Candidates running for office
+- `/admin/measures` - Maintain the list of Measures
+- `/admin/endorsers` - Maintain the list of Publications and other third-party Endorsers
+- `/admin/endorsements/{id}` - Maintain the list of Endorsements for each Endorser
+- `/admin/emails` - Generate a spreadsheet containing emails and demographic info for download
 
 ## Environment Setup
 
-Note for Windows users: PowerShell works best :)
 
 ### Prerequisites
 
 1. node / npm (if not already installed): https://www.npmjs.com/get-npm
-2. Mongoose: `npm install mongoose`
-3. Join us as a volunteer! On [DemocracyLab](https://www.democracylab.org/index/?section=AboutProject&id=77), click the "Contact Project" button in the upper-right. Enter a message requesting access to Slack and Github. Include your email address and GitHub username in the message.
-4. Once you have access, the volunteer Slack is readysetvote2018.slack.com
+2. Join us as a volunteer! On [DemocracyLab](https://www.democracylab.org/index/?section=AboutProject&id=77), click the "Contact Project" button in the upper-right. Enter a message requesting access to Slack and Github. Include your email address and GitHub username in the message.
+4. Once you have access, the volunteer Slack is readysetvote2.slack.com
 
-### Running the Server Locally
-
-1. On Slack in #general, post a message requesting access to the mongo DB. A volunteer will provide you with a `.env` config file.
-2. After cloning the repo, create the directory `server/config`, and drop the `.env` file from the previous step in this directory.
-3. Start the server: `npm run server`
 
 ### Useful Tools
 
 - [Postman](https://www.getpostman.com/downloads/) for crafting REST requests and inspecting responses
-- [Compass](https://www.mongodb.com/products/compass), a GUI for interacting with a mongo DB
